@@ -1,0 +1,1109 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+
+/* ==============================
+   1. إعدادات عامة ومتغيرات الألوان
+============================== */
+
+:root {
+    --primary: #172554;
+    --primary-hover: #1e40af;
+    --success: #16a34a;
+    --danger: #dc2626;
+
+    --body-bg: #f4f6fa;
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+
+    --text-main: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+
+    --border: #e2e8f0;
+    --table-head: #f8fafc;
+    --table-hover: #f1f5f9;
+
+    --soft-bg: #f2f4f8;
+    --modal-bg: #f8fafc;
+
+    --shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+    background-color: var(--body-bg);
+    color: var(--text-main);
+    direction: rtl;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+main {
+    padding: 30px 5%;
+}
+
+/* ==============================
+   2. الوضع الليلي
+============================== */
+
+body.dark-mode {
+    --body-bg: #0f172a;
+    --card-bg: #1e293b;
+    --input-bg: #0f172a;
+
+    --text-main: #e2e8f0;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+
+    --border: #334155;
+    --table-head: #263449;
+    --table-hover: #334155;
+
+    --soft-bg: #263449;
+    --modal-bg: #172438;
+
+    --shadow: 0 3px 15px rgba(0, 0, 0, 0.18);
+}
+
+body.dark-mode .dashboard h2,
+body.dark-mode .section-header h2,
+body.dark-mode .history-header h3,
+body.dark-mode .exchange-history h3,
+body.dark-mode .progress-header h3,
+body.dark-mode .exchange-result h3,
+body.dark-mode .stat-card h2 {
+    color: var(--text-main);
+}
+
+body.dark-mode .form-group label,
+body.dark-mode #client-payment-form label,
+body.dark-mode #edit-client-form label {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .delete-btn {
+    background: #451a1a;
+    color: #fca5a5;
+}
+
+body.dark-mode .delete-btn:hover {
+    background: #7f1d1d;
+}
+
+body.dark-mode #client-payment-form,
+body.dark-mode #edit-client-form {
+    background: var(--modal-bg);
+    border-color: var(--border);
+}
+
+/* ==============================
+   3. Header
+============================== */
+
+header {
+    background-color: var(--primary);
+    color: white;
+    padding: 25px 5%;
+}
+
+.main-header .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+header h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.brand-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-title img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 60%;
+}
+
+/* زر تبديل المظهر */
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 11px 18px;
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-2px);
+}
+
+#theme-icon {
+    font-size: 18px;
+}
+
+/* ==============================
+   4. إعدادات النظام والتارجت
+============================== */
+
+.settings-section {
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+}
+
+.settings-content {
+    display: flex;
+    align-items: end;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.settings-content .form-group {
+    flex: 1;
+    min-width: 220px;
+}
+
+#save-target,
+#clear-all-data {
+    border: none;
+    padding: 13px 22px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#save-target {
+    background-color: var(--primary);
+}
+
+#save-target:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+#clear-all-data {
+    background-color: var(--danger);
+}
+
+#clear-all-data:hover {
+    background-color: #b91c1c;
+    transform: translateY(-2px);
+}
+
+/* ==============================
+   5. لوحة التحكم
+============================== */
+
+.dashboard {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.dashboard h2 {
+    font-size: 23px;
+    margin-bottom: 12px;
+    color: var(--primary);
+}
+
+.dashboard p {
+    color: var(--text-secondary);
+}
+
+.dashboard-header {
+    margin-bottom: 30px;
+}
+
+.dashboard-header h2 {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-card h4 {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 18px;
+}
+
+.stat-card h2 {
+    color: var(--primary);
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.stat-card span {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* ==============================
+   6. شريط تقدم التارجت
+============================== */
+
+.target-progress {
+    background-color: var(--card-bg);
+    padding: 25px;
+    margin-top: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.progress-header h3 {
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.progress-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.progress-percentage {
+    color: var(--success);
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 13px;
+    background-color: var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background-color: var(--success);
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.progress-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    gap: 10px;
+}
+
+/* ==============================
+   7. الأقسام الرئيسية
+============================== */
+
+.payments-section,
+.clients-section,
+.exchange-section {
+    margin-top: 30px;
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.section-header {
+    margin-bottom: 25px;
+}
+
+.section-header h2 {
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.section-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* ==============================
+   8. النماذج والحقول
+============================== */
+
+.payment-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group label {
+    color: #334155;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.save-payment {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 25px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.save-payment:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* ==============================
+   9. سجل المدفوعات
+============================== */
+
+.payments-history {
+    margin-top: 35px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.history-header h3 {
+    color: var(--primary);
+}
+
+.history-header input {
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    background: var(--input-bg);
+    color: var(--text-main);
+}
+
+/* ==============================
+   10. الجداول
+============================== */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+th,
+td {
+    padding: 16px 12px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+th {
+    background-color: var(--table-head);
+    color: var(--text-secondary);
+}
+
+td {
+    color: var(--text-main);
+}
+
+tbody tr {
+    transition: background-color 0.2s;
+}
+
+tbody tr:hover {
+    background-color: var(--table-hover);
+}
+
+.clients-section table {
+    min-width: 950px;
+}
+
+/* ==============================
+   11. أزرار الحذف
+============================== */
+
+.delete-btn {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.delete-btn:hover {
+    background-color: #fca5a5;
+}
+
+/* زر تفاصيل العميل */
+.client-details-btn {
+    background: linear-gradient(135deg, #172554, #2563eb);
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+    transition: all 0.3s ease;
+}
+
+.client-details-btn:hover {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.25);
+}
+
+/* ==============================
+   12. قسم تحويل العملات
+============================== */
+
+.exchange-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 25px;
+}
+
+#calculate-exchange {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#calculate-exchange:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.exchange-result {
+    background-color: var(--soft-bg);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.exchange-result h3 {
+    color: var(--text-main);
+}
+
+.exchange-result p {
+    color: var(--success);
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* سجل التحويلات */
+
+.exchange-history {
+    margin-top: 30px;
+}
+
+.exchange-history h3 {
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+.exchange-history table {
+    min-width: 650px;
+}
+
+.exchange-history th,
+.exchange-history td {
+    padding: 14px;
+    text-align: center;
+}
+
+/* ==============================
+   13. نموذج إضافة دفعة جديدة
+============================== */
+
+#client-modal-extra {
+    margin-top: 25px;
+}
+
+#client-modal-extra h3 {
+    font-size: 21px;
+    margin-bottom: 18px;
+    color: var(--text-main);
+}
+
+#client-payment-form {
+    background: var(--modal-bg);
+    padding: 25px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px !important;
+}
+
+#client-payment-form label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-top: 8px;
+}
+
+#client-payment-form input,
+#client-payment-form select,
+#client-payment-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-main);
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+}
+
+#client-payment-form input:focus,
+#client-payment-form select:focus,
+#client-payment-form textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+#client-payment-form textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+#client-payment-form button {
+    margin-top: 15px;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#client-payment-form button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+/* ==============================
+   14. نموذج تعديل بيانات العميل
+============================== */
+
+#edit-client-form {
+    margin-top: 20px !important;
+    padding: 25px;
+    background: var(--modal-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px !important;
+}
+
+#edit-client-form label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-top: 8px;
+}
+
+#edit-client-form input,
+#edit-client-form select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-main);
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+}
+
+#edit-client-form input:focus,
+#edit-client-form select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+#edit-client-form button {
+    margin-top: 15px;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#edit-client-form button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+/* ==============================
+   15. تحسينات عامة
+============================== */
+
+button:disabled,
+input:disabled,
+select:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+input,
+select,
+textarea {
+    max-width: 100%;
+}
+
+::selection {
+    background: #bfdbfe;
+    color: #172554;
+}
+
+/* ==============================
+   16. Responsive Design
+============================== */
+
+@media (max-width: 1000px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    main {
+        padding: 25px 3%;
+    }
+}
+
+@media (max-width: 650px) {
+    main {
+        padding: 15px 3%;
+    }
+
+    header {
+        padding: 20px 4%;
+    }
+
+    .main-header .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header h1 {
+        font-size: 26px;
+    }
+
+    .theme-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .settings-section,
+    .dashboard,
+    .payments-section,
+    .clients-section,
+    .exchange-section {
+        padding: 18px;
+    }
+
+    .settings-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .settings-content .form-group {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #save-target,
+    #clear-all-data {
+        width: 100%;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 13px;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+
+    .stat-card h2 {
+        font-size: 24px;
+    }
+
+    .payment-form,
+    .exchange-form {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+
+    .progress-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .progress-details {
+        flex-direction: column;
+    }
+
+    .history-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .history-header input {
+        width: 100%;
+    }
+
+    .save-payment,
+    #calculate-exchange {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+
+/* Installments Section */
+.installments-section {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    margin-top: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.installments-section .section-header {
+    margin-bottom: 20px;
+}
+
+.installments-section .section-header h2 {
+    font-size: 22px;
+    color: #222;
+    margin-bottom: 8px;
+}
+
+.installments-section .section-header p {
+    color: #777;
+    font-size: 14px;
+}
+
+.installments-section .table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.installments-section table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+.installments-section th,
+.installments-section td {
+    padding: 15px 12px;
+    text-align: right;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+}
+
+.installments-section th {
+    background-color: #f7f8fa;
+    color: #444;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.installments-section td {
+    color: #555;
+    font-size: 14px;
+}
+
+.installments-section tbody tr:hover {
+    background-color: #fafafa;
+}
+
+.installments-section button {
+    background-color: #10101c;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.installments-section button:hover {
+    opacity: 0.85;
+}
+
+.installments-section .paid-amount {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.installments-section .remaining-amount {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.installments-section button {
+    background: linear-gradient(135deg, #172554, #2563eb);
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+    transition: all 0.3s ease;
+}
+
+.installments-section button:hover {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.25);
+}
+
+.client-modal-content h3 {
+    color: var(--text-main);
+}
+
+.client-modal-content table th,
+.client-modal-content table td {
+    border-bottom: 1px solid var(--border);
+    padding: 13px 12px;
+}
+
+.client-modal-content table th {
+    background: var(--table-head);
+    color: var(--text-secondary);
+}
+
+.client-modal-content table td {
+    color: var(--text-main);
+}
+
+.client-modal-content table tbody tr:hover {
+    background: var(--table-hover);
+}
+
+/* تحسين نافذة تفاصيل العميل */
+.client-modal-content {
+    width: 100%;
+    max-width: 950px;
+}
+
+@media (max-width: 650px) {
+
+    .client-modal-content {
+        padding: 15px !important;
+        margin: 5px auto !important;
+    }
+
+    .client-info-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .client-finance-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .client-modal-content h2 {
+        font-size: 19px;
+    }
+
+    .client-modal-content h3 {
+        font-size: 17px;
+    }
+}
+
+.installments-section {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+}
+
+.installments-section .section-header h2 {
+    color: var(--text-main);
+}
+
+.installments-section .section-header p {
+    color: var(--text-secondary);
+}
+
+.installments-section th {
+    background-color: var(--table-head);
+    color: var(--text-secondary);
+}
+
+.installments-section td {
+    color: var(--text-main);
+    border-color: var(--border);
+}
+
+.installments-section tbody tr:hover {
+    background-color: var(--table-hover);
+}
+
+@media (max-width: 650px) {
+
+    .installments-section {
+        padding: 18px;
+    }
+
+    .target-progress {
+        padding: 18px;
+    }
+
+    .progress-percentage {
+        font-size: 21px;
+    }
+
+    .exchange-result p {
+        font-size: 21px;
+    }
+
+    .client-modal-content button {
+        max-width: 100%;
+    }
+}
