@@ -710,10 +710,10 @@ function displayPayments() {
             <td>${escapeHTML(client.name)}</td>
             <td>${escapeHTML(client.program)}</td>
             <td>${escapeHTML(payment.date)}</td>
-            <td>${formatNumber(payment.amount)} ر.س</td>
+            <td>${formatNumber(payment.amount)} ⃁</td>
             <td>${escapeHTML(payment.method)}</td>
-            <td>${formatNumber(payment.discount)} ر.س</td>
-            <td>${formatNumber(payment.netAmount)} ر.س</td>
+            <td>${formatNumber(payment.discount)} ⃁</td>
+            <td>${formatNumber(payment.netAmount)} ⃁</td>
             <td>
                 <button class="delete-btn"
                     data-payment-id="${payment.id}">
@@ -803,9 +803,9 @@ function displayClients() {
             <td>${escapeHTML(client.program)}</td>
             <td>${escapeHTML(client.system)}</td>
             <td>${escapeHTML(client.status)}</td>
-            <td>${formatNumber(client.totalAmount)} ر.س</td>
-            <td>${formatNumber(paid)} ر.س</td>
-            <td>${formatNumber(remaining)} ر.س</td>
+            <td>${formatNumber(client.totalAmount)} ⃁</td>
+            <td>${formatNumber(paid)} ⃁</td>
+            <td>${formatNumber(remaining)} ⃁</td>
             <td>
                 <button class="client-details-btn"
                     data-client-id="${client.id}">
@@ -855,9 +855,9 @@ function displayInstallments() {
         row.innerHTML = `
             <td>${escapeHTML(client.name)}</td>
             <td>${escapeHTML(client.program)}</td>
-            <td>${formatNumber(client.totalAmount)} ر.س</td>
-            <td class="paid-amount">${formatNumber(paid)} ر.س</td>
-            <td class="remaining-amount">${formatNumber(remaining)} ر.س</td>
+            <td>${formatNumber(client.totalAmount)} ⃁</td>
+            <td class="paid-amount">${formatNumber(paid)} ⃁</td>
+            <td class="remaining-amount">${formatNumber(remaining)} ⃁</td>
             <td>${clientPayments.length}</td>
             <td>${escapeHTML(lastPayment)}</td>
             <td>
@@ -1068,9 +1068,9 @@ function openClientDetails(id) {
         paymentRows += `
             <tr>
                 <td>${escapeHTML(payment.date)}</td>
-                <td>${formatNumber(payment.amount)} ر.س</td>
-                <td>${formatNumber(payment.discount)} ر.س</td>
-                <td>${formatNumber(payment.netAmount)} ر.س</td>
+                <td>${formatNumber(payment.amount)} ⃁</td>
+                <td>${formatNumber(payment.discount)} ⃁</td>
+                <td>${formatNumber(payment.netAmount)} ⃁</td>
                 <td>${escapeHTML(payment.method)}</td>
                 <td>
                     <button class="delete-btn"
@@ -1102,7 +1102,7 @@ function openClientDetails(id) {
             <tr>
                 <td>${escapeHTML(exchange.date || "—")}</td>
                 <td>${payment ? escapeHTML(payment.date) : "—"}</td>
-                <td>${formatNumber(exchange.sar)} ر.س</td>
+                <td>${formatNumber(exchange.sar)} ⃁</td>
                 <td>${Number(exchange.rate).toFixed(4)}</td>
                 <td>${Number(exchange.usd).toFixed(2)} $</td>
                 <td>
@@ -1170,17 +1170,17 @@ function openClientDetails(id) {
 
                 <div>
                     <strong>السعر الأصلي:</strong>
-                    ${formatNumber(client.originalAmount)} ر.س
+                    ${formatNumber(client.originalAmount)} ⃁
                 </div>
 
                 <div>
                     <strong>الخصم:</strong>
-                    ${formatNumber(client.discountAmount)} ر.س
+                    ${formatNumber(client.discountAmount)} ⃁
                 </div>
 
                 <div>
                     <strong>السعر بعد الخصم:</strong>
-                    ${formatNumber(client.totalAmount)} ر.س
+                    ${formatNumber(client.totalAmount)} ⃁
                 </div>
 
             </div>
@@ -1198,17 +1198,17 @@ function openClientDetails(id) {
 
                 <div style="background:var(--soft-bg);padding:15px;border-radius:8px;">
                     <p>المبلغ الكلي</p>
-                    <strong>${formatNumber(client.totalAmount)} ر.س</strong>
+                    <strong>${formatNumber(client.totalAmount)} ⃁</strong>
                 </div>
 
                 <div style="background:var(--soft-bg);padding:15px;border-radius:8px;">
                     <p>إجمالي المدفوع</p>
-                    <strong>${formatNumber(paid)} ر.س</strong>
+                    <strong>${formatNumber(paid)} ⃁</strong>
                 </div>
 
                 <div style="background:var(--soft-bg);padding:15px;border-radius:8px;">
                     <p>المتبقي</p>
-                    <strong>${formatNumber(remaining)} ر.س</strong>
+                    <strong>${formatNumber(remaining)} ⃁</strong>
                 </div>
 
             </div>
@@ -1768,7 +1768,7 @@ function displayExchanges() {
             <td>${escapeHTML(exchange.date)}</td>
             <td>${escapeHTML(client ? client.name : "—")}</td>
             <td>${payment ? escapeHTML(payment.date) : "—"}</td>
-            <td>${formatNumber(exchange.sar)} ر.س</td>
+            <td>${formatNumber(exchange.sar)} ⃁</td>
             <td>${Number(exchange.rate).toFixed(4)}</td>
             <td>${Number(exchange.usd).toFixed(2)} $</td>
             <td>
