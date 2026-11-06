@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
 
 /* ==============================
@@ -895,6 +894,7 @@ textarea {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -1105,5 +1105,50 @@ textarea {
 
     .client-modal-content button {
         max-width: 100%;
+    }
+}
+
+
+/* ==============================
+   17. Target Chart
+============================== */
+
+.target-chart {
+    margin-top: 25px;
+    padding: 25px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.chart-header {
+    margin-bottom: 20px;
+}
+
+.chart-header h3 {
+    color: var(--text-main);
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.chart-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+@media (max-width: 650px) {
+    .target-chart {
+        padding: 18px;
+    }
+
+    .chart-container {
+        height: 250px;
     }
 }

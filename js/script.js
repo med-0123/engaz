@@ -5,6 +5,7 @@
 let paymentForm = document.querySelector(".payment-form");
 
 let clientName = document.querySelector("#client-name");
+let clientPhone = document.querySelector("#client-phone");
 let clientProgram = document.querySelector("#client-program");
 let clientSystem = document.querySelector("#client-system");
 let clientStatus = document.querySelector("#client-status");
@@ -194,6 +195,8 @@ themeToggle.addEventListener("click", function () {
         : "dark";
 
     applyTheme(newTheme);
+
+    updateTargetChart();
 
 });
 
@@ -396,6 +399,8 @@ function migrateOldPayments() {
 
     clients.forEach(function (client) {
 
+        client.phone = client.phone || "";
+
         client.totalAmount = Number(client.totalAmount || 0);
 
         client.originalAmount = Number(
@@ -419,6 +424,7 @@ function migrateOldPayments() {
                 client = {
                     id: generateId(),
                     name: payment.name || "عميل قديم",
+                    phone: "",
                     program: payment.program || "",
                     system: payment.system || "",
                     status: payment.status || "",
@@ -571,6 +577,7 @@ function createPayment(clientId, data) {
 function addPayment() {
 
     let name = clientName.value.trim();
+    let phone = clientPhone.value.trim();
     let program = clientProgram.value;
     let system = clientSystem.value;
     let status = clientStatus.value;
@@ -586,8 +593,8 @@ function addPayment() {
 
     let note = notes.value.trim();
 
-    if (!name || !program || !system || !status) {
-        alert("من فضلك أكمل بيانات العميل");
+    if (!name || !phone || !program || !system || !status) {
+        alert("من فضلك أكمل بيانات العميل ورقم الجوال");
         return;
     }
 
@@ -635,6 +642,7 @@ function addPayment() {
     let client = {
         id: generateId(),
         name: name,
+        phone: phone,
         program: program,
         system: system,
         status: status,
@@ -800,6 +808,7 @@ function displayClients() {
 
         row.innerHTML = `
             <td>${escapeHTML(client.name)}</td>
+            <td dir="ltr">${escapeHTML(client.phone || "—")}</td>
             <td>${escapeHTML(client.program)}</td>
             <td>${escapeHTML(client.system)}</td>
             <td>${escapeHTML(client.status)}</td>
@@ -924,6 +933,7 @@ function exportClientExcel(clientId) {
 
         ["بيانات العميل"],
         ["اسم العميل", client.name],
+        ["رقم الجوال", client.phone || "—"],
         ["البرنامج", client.program],
         ["النظام", client.system],
         ["الحالة", client.status],
@@ -1152,6 +1162,11 @@ function openClientDetails(id) {
                 gap:15px;
                 margin-bottom:25px;
             ">
+
+            <div>
+                <strong>رقم الجوال:</strong>
+                <span dir="ltr">${escapeHTML(client.phone || "—")}</span>
+            </div>
 
                 <div>
                     <strong>البرنامج:</strong>
@@ -1500,15 +1515,18 @@ function showEditClientForm() {
             <label>اسم العميل</label>
             <input name="name" value="${escapeHTML(client.name)}" required>
 
+            <label>رقم الجوال</label>
+            <input name="phone" type="tel" value="${escapeHTML(client.phone || "")}"  dir="ltr">
+
             <label>البرنامج</label>
             <select name="program" required>
                 ${programs.map(function (item) {
-                    return `
+        return `
                         <option value="${item}" ${client.program === item ? "selected" : ""}>
                             ${item}
                         </option>
                     `;
-                }).join("")}
+    }).join("")}
             </select>
 
             <label>النظام</label>
@@ -1546,6 +1564,7 @@ function showEditClientForm() {
         let formData = new FormData(this);
 
         let newName = formData.get("name").trim();
+        let newPhone = formData.get("phone").trim();
         let newTotal = Number(formData.get("totalAmount"));
 
         if (!newName) {
@@ -1564,6 +1583,7 @@ function showEditClientForm() {
         }
 
         client.name = newName;
+        client.phone = newPhone;
         client.program = formData.get("program");
         client.system = formData.get("system");
         client.status = formData.get("status");
@@ -1660,6 +1680,205 @@ function showAddPaymentForm() {
 
 
 // ==========================================
+// Target Chart
+// ==========================================
+
+let targetChart = null;
+
+function updateTargetChart() {
+
+    let canvas = document.querySelector("#target-chart");
+
+    if (!canvas || typeof Chart === "undefined") return;
+
+    let today = new Date();
+
+    let year = today.getFullYear();
+    let month = today.getMonth();
+
+    let daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let labels = [];
+    let dailyAmounts = new Array(daysInMonth).fill(0);
+
+    // تجميع التحصيلات اليومية
+    payments.forEach(function (payment) {
+
+        if (!payment.date) return;
+
+        let date = new Date(payment.date + "T00:00:00");
+
+        if (
+            date.getFullYear() !== year ||
+            date.getMonth() !== month
+        ) return;
+
+        let day = date.getDate();
+
+        dailyAmounts[day - 1] += Number(
+            payment.netAmount ?? payment.amount ?? 0
+        );
+
+    });
+
+    // حساب التحصيل التراكمي
+    let cumulativeAmounts = [];
+    let total = 0;
+
+    for (let i = 0; i < daysInMonth; i++) {
+
+        total += dailyAmounts[i];
+
+        labels.push(String(i + 1));
+
+        cumulativeAmounts.push(total);
+
+    }
+
+    let targetValues = new Array(daysInMonth).fill(target);
+
+    let isDark = document.body.classList.contains("dark-mode");
+
+    let styles = getComputedStyle(document.body);
+
+    let textColor = styles.getPropertyValue("--text-secondary").trim();
+    let gridColor = styles.getPropertyValue("--border").trim();
+
+    let chartData = {
+        labels: labels,
+
+        datasets: [
+            {
+                label: "التحصيل التراكمي",
+                data: cumulativeAmounts,
+
+                borderColor: "#16a34a",
+                backgroundColor: "rgba(22, 163, 74, 0.10)",
+
+                borderWidth: 3,
+                tension: 0.35,
+
+                fill: true,
+
+                pointRadius: 2,
+                pointHoverRadius: 6,
+
+                pointBackgroundColor: "#16a34a"
+            },
+            {
+                label: "التارجت المستهدف",
+                data: targetValues,
+
+                borderColor: "#f59e0b",
+                borderWidth: 2,
+
+                borderDash: [6, 5],
+
+                pointRadius: 0,
+                tension: 0,
+
+                fill: false
+            }
+        ]
+    };
+
+    let chartOptions = {
+
+        responsive: true,
+        maintainAspectRatio: false,
+
+        interaction: {
+            intersect: false,
+            mode: "index"
+        },
+
+        plugins: {
+            legend: {
+                labels: {
+                    color: textColor,
+                    font: {
+                        family: "Cairo"
+                    }
+                }
+            },
+
+            tooltip: {
+                rtl: true,
+
+                callbacks: {
+                    label: function (context) {
+                        return context.dataset.label + ": " +
+                            formatNumber(context.parsed.y) + " ريال";
+                    }
+                }
+            }
+        },
+
+        scales: {
+
+            x: {
+                ticks: {
+                    color: textColor,
+                    maxTicksLimit: 12
+                },
+
+                grid: {
+                    color: gridColor
+                },
+
+                title: {
+                    display: true,
+                    text: "أيام الشهر",
+                    color: textColor
+                }
+            },
+
+            y: {
+                beginAtZero: true,
+
+                ticks: {
+                    color: textColor,
+
+                    callback: function (value) {
+                        return formatNumber(value);
+                    }
+                },
+
+                grid: {
+                    color: gridColor
+                },
+
+                title: {
+                    display: true,
+                    text: "المبلغ بالريال السعودي",
+                    color: textColor
+                }
+            }
+
+        }
+    };
+
+    if (targetChart) {
+
+        targetChart.data = chartData;
+        targetChart.options = chartOptions;
+
+        targetChart.update();
+
+    } else {
+
+        targetChart = new Chart(canvas, {
+            type: "line",
+            data: chartData,
+            options: chartOptions
+        });
+
+    }
+
+}
+
+
+// ==========================================
 // 27. لوحة التحكم - الشهر الحالي
 // ==========================================
 
@@ -1740,6 +1959,8 @@ function updateDashboard() {
 
     document.querySelector("#progress-target").textContent =
         formatNumber(target) + " ريال مستهدف";
+
+        updateTargetChart();
 
 }
 

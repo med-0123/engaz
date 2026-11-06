@@ -144,6 +144,21 @@
                 </div>
 
             </div>
+            <!-- Target Chart -->
+            <div class="target-chart">
+
+                <div class="chart-header">
+                    <div>
+                        <h3>تحليل التارجت</h3>
+                        <p>متابعة تطور المبيعات والتحصيل خلال الشهر</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="target-chart"></canvas>
+                </div>
+
+            </div>
 
         </section>
 
@@ -163,6 +178,11 @@
                 <div class="form-group">
                     <label for="client-name">اسم العميل</label>
                     <input type="text" id="client-name" placeholder="أدخل اسم العميل">
+                </div>
+
+                <div class="form-group">
+                    <label for="client-phone">رقم الجوال</label>
+                    <input type="tel" id="client-phone" placeholder="أدخل رقم الجوال" dir="ltr" required pattern="[0-9]{10,15}">
                 </div>
 
                 <div class="form-group">
@@ -225,7 +245,9 @@
                         <option value="تحويل بنكي">تحويل بنكي</option>
                         <option value="بطاقة بنكية">بطاقة بنكية</option>
                         <option value="دفع إلكتروني">دفع إلكتروني</option>
+                        <option value="تابي او تمارا">تابي او تمارا</option>
                         <option value="طريقة أخرى">طريقة أخرى</option>
+
                     </select>
                 </div>
 
@@ -332,6 +354,7 @@
                     <thead>
                         <tr>
                             <th>اسم العميل</th>
+                            <th>رقم الجوال</th>
                             <th>البرنامج</th>
                             <th>النظام</th>
                             <th>الحالة</th>
@@ -428,6 +451,7 @@
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/script.js"></script>
 
 </body>
