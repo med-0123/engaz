@@ -39,6 +39,9 @@ let exchangeBtn = document.querySelector("#calculate-exchange");
 let exchangeUsd = document.querySelector("#exchange-usd");
 let exchangeHistoryBody = document.querySelector("#exchange-history-body");
 
+// المبلغ يُسحب من الدفعة المختارة ولا يُعدَّل يدويًا
+exchangeSar.readOnly = true;
+
 
 // ==========================================
 // 3. عناصر الإعدادات والمظهر
@@ -57,9 +60,18 @@ let themeText = document.querySelector("#theme-text");
 // 4. تخزين البيانات
 // ==========================================
 
-let clients = JSON.parse(localStorage.getItem("clients")) || [];
-let payments = JSON.parse(localStorage.getItem("payments")) || [];
-let exchanges = JSON.parse(localStorage.getItem("exchanges")) || [];
+function loadList(key) {
+    try {
+        let data = JSON.parse(localStorage.getItem(key));
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+let clients = loadList("clients");
+let payments = loadList("payments");
+let exchanges = loadList("exchanges");
 
 let target = Number(localStorage.getItem("target")) || 50000;
 
@@ -71,13 +83,20 @@ let currentClientId = null;
 // ==========================================
 
 function saveData() {
-    localStorage.setItem("clients", JSON.stringify(clients));
-    localStorage.setItem("payments", JSON.stringify(payments));
-    localStorage.setItem("exchanges", JSON.stringify(exchanges));
+    try {
+        localStorage.setItem("clients", JSON.stringify(clients));
+        localStorage.setItem("payments", JSON.stringify(payments));
+        localStorage.setItem("exchanges", JSON.stringify(exchanges));
+    } catch (error) {
+        alert("تعذر حفظ البيانات في المتصفح. تأكد من وجود مساحة تخزين ومن عدم استخدام التصفح الخاص.");
+    }
 }
 
+let idCounter = 0;
+
 function generateId() {
-    return Date.now() + Math.floor(Math.random() * 1000);
+    idCounter = (idCounter + 1) % 1000;
+    return Date.now() * 1000 + idCounter;
 }
 
 function escapeHTML(value) {
@@ -283,6 +302,8 @@ discountValue.addEventListener("input", function () {
 });
 
 updateInstallmentFields();
+
+paymentDate.value = getTodayDate();
 
 
 // ==========================================
@@ -564,6 +585,11 @@ function createPayment(clientId, data) {
 
     payments.push(payment);
 
+    // عند سداد كامل المبلغ تصبح الحالة "دفع"
+    if (getClientRemaining(client) <= 0.001) {
+        client.status = "دفع";
+    }
+
     saveData();
 
     return true;
@@ -595,6 +621,11 @@ function addPayment() {
 
     if (!name || !phone || !program || !system || !status) {
         alert("من فضلك أكمل بيانات العميل ورقم الجوال");
+        return;
+    }
+
+    if (!/^[0-9]{10,15}$/.test(phone)) {
+        alert("رقم الجوال يجب أن يكون أرقامًا فقط (من 10 إلى 15 رقمًا)");
         return;
     }
 
@@ -651,7 +682,7 @@ function addPayment() {
         discountAmount: financialData.discountAmount,
         totalAmount: financialData.totalAmount,
 
-        createdAt: new Date().toISOString()
+        createdAt: getTodayDate()
     };
 
     clients.push(client);
@@ -677,6 +708,8 @@ function addPayment() {
     paymentForm.reset();
 
     updateInstallmentFields();
+
+    paymentDate.value = getTodayDate();
 
     displayPayments();
     displayClients();
@@ -712,16 +745,24 @@ function displayPayments() {
             return;
         }
 
+        // خصم العميل يُعرض مرة واحدة فقط على أول دفعة له
+        let isFirstPayment = payments.find(function (item) {
+            return Number(item.clientId) === Number(client.id);
+        }) === payment;
+
+        let shownDiscount = Number(payment.discount || 0) +
+            (isFirstPayment ? Number(client.discountAmount || 0) : 0);
+
         let row = document.createElement("tr");
 
         row.innerHTML = `
             <td>${escapeHTML(client.name)}</td>
             <td>${escapeHTML(client.program)}</td>
             <td>${escapeHTML(payment.date)}</td>
-            <td>${formatNumber(payment.amount)} ⃁</td>
+            <td>${formatNumber(payment.amount)} ريال</td>
             <td>${escapeHTML(payment.method)}</td>
-            <td>${formatNumber(payment.discount)} ⃁</td>
-            <td>${formatNumber(payment.netAmount)} ⃁</td>
+            <td>${formatNumber(shownDiscount)} ريال</td>
+            <td>${formatNumber(payment.netAmount)} ريال</td>
             <td>
                 <button class="delete-btn"
                     data-payment-id="${payment.id}">
@@ -812,9 +853,9 @@ function displayClients() {
             <td>${escapeHTML(client.program)}</td>
             <td>${escapeHTML(client.system)}</td>
             <td>${escapeHTML(client.status)}</td>
-            <td>${formatNumber(client.totalAmount)} ⃁</td>
-            <td>${formatNumber(paid)} ⃁</td>
-            <td>${formatNumber(remaining)} ⃁</td>
+            <td>${formatNumber(client.totalAmount)} ريال</td>
+            <td>${formatNumber(paid)} ريال</td>
+            <td>${formatNumber(remaining)} ريال</td>
             <td>
                 <button class="client-details-btn"
                     data-client-id="${client.id}">
@@ -864,9 +905,9 @@ function displayInstallments() {
         row.innerHTML = `
             <td>${escapeHTML(client.name)}</td>
             <td>${escapeHTML(client.program)}</td>
-            <td>${formatNumber(client.totalAmount)} ⃁</td>
-            <td class="paid-amount">${formatNumber(paid)} ⃁</td>
-            <td class="remaining-amount">${formatNumber(remaining)} ⃁</td>
+            <td>${formatNumber(client.totalAmount)} ريال</td>
+            <td class="paid-amount">${formatNumber(paid)} ريال</td>
+            <td class="remaining-amount">${formatNumber(remaining)} ريال</td>
             <td>${clientPayments.length}</td>
             <td>${escapeHTML(lastPayment)}</td>
             <td>
@@ -900,6 +941,11 @@ installmentsTable.addEventListener("click", function (event) {
 function escapeCSV(value) {
 
     let text = String(value ?? "");
+
+    // منع تنفيذ المعادلات عند فتح الملف في Excel
+    if (typeof value === "string" && /^[=+\-@]/.test(text)) {
+        text = "'" + text;
+    }
 
     return '"' + text.replace(/"/g, '""') + '"';
 
@@ -1078,9 +1124,9 @@ function openClientDetails(id) {
         paymentRows += `
             <tr>
                 <td>${escapeHTML(payment.date)}</td>
-                <td>${formatNumber(payment.amount)} ⃁</td>
-                <td>${formatNumber(payment.discount)} ⃁</td>
-                <td>${formatNumber(payment.netAmount)} ⃁</td>
+                <td>${formatNumber(payment.amount)} ريال</td>
+                <td>${formatNumber(payment.discount)} ريال</td>
+                <td>${formatNumber(payment.netAmount)} ريال</td>
                 <td>${escapeHTML(payment.method)}</td>
                 <td>
                     <button class="delete-btn"
@@ -1112,7 +1158,7 @@ function openClientDetails(id) {
             <tr>
                 <td>${escapeHTML(exchange.date || "—")}</td>
                 <td>${payment ? escapeHTML(payment.date) : "—"}</td>
-                <td>${formatNumber(exchange.sar)} ⃁</td>
+                <td>${formatNumber(exchange.sar)} ريال</td>
                 <td>${Number(exchange.rate).toFixed(4)}</td>
                 <td>${Number(exchange.usd).toFixed(2)} $</td>
                 <td>
@@ -1185,17 +1231,17 @@ function openClientDetails(id) {
 
                 <div>
                     <strong>السعر الأصلي:</strong>
-                    ${formatNumber(client.originalAmount)} ⃁
+                    ${formatNumber(client.originalAmount)} ريال
                 </div>
 
                 <div>
                     <strong>الخصم:</strong>
-                    ${formatNumber(client.discountAmount)} ⃁
+                    ${formatNumber(client.discountAmount)} ريال
                 </div>
 
                 <div>
                     <strong>السعر بعد الخصم:</strong>
-                    ${formatNumber(client.totalAmount)} ⃁
+                    ${formatNumber(client.totalAmount)} ريال
                 </div>
 
             </div>
@@ -1213,17 +1259,17 @@ function openClientDetails(id) {
 
                 <div style="background:var(--soft-bg);padding:15px;border-radius:8px;">
                     <p>المبلغ الكلي</p>
-                    <strong>${formatNumber(client.totalAmount)} ⃁</strong>
+                    <strong>${formatNumber(client.totalAmount)} ريال</strong>
                 </div>
 
                 <div style="background:var(--soft-bg);padding:15px;border-radius:8px;">
                     <p>إجمالي المدفوع</p>
-                    <strong>${formatNumber(paid)} ⃁</strong>
+                    <strong>${formatNumber(paid)} ريال</strong>
                 </div>
 
                 <div style="background:var(--soft-bg);padding:15px;border-radius:8px;">
                     <p>المتبقي</p>
-                    <strong>${formatNumber(remaining)} ⃁</strong>
+                    <strong>${formatNumber(remaining)} ريال</strong>
                 </div>
 
             </div>
@@ -1567,6 +1613,11 @@ function showEditClientForm() {
         let newPhone = formData.get("phone").trim();
         let newTotal = Number(formData.get("totalAmount"));
 
+        if (newPhone && !/^[0-9]{10,15}$/.test(newPhone)) {
+            alert("رقم الجوال يجب أن يكون أرقامًا فقط (من 10 إلى 15 رقمًا)");
+            return;
+        }
+
         if (!newName) {
             alert("أدخل اسم العميل");
             return;
@@ -1588,11 +1639,13 @@ function showEditClientForm() {
         client.system = formData.get("system");
         client.status = formData.get("status");
 
-        // المبلغ المدخل هنا هو السعر النهائي بعد الخصم
-        // لذلك نعيد ضبط السعر الأصلي والخصم لتجنب اختلاف الحسابات
+        // المبلغ المدخل هو السعر النهائي بعد الخصم، ويبقى الخصم المسجل كما هو
         client.totalAmount = newTotal;
-        client.originalAmount = newTotal;
-        client.discountAmount = 0;
+        client.originalAmount = newTotal + Number(client.discountAmount || 0);
+
+        if (getClientRemaining(client) <= 0.001) {
+            client.status = "دفع";
+        }
 
         saveData();
 
@@ -1636,6 +1689,7 @@ function showAddPaymentForm() {
                 <option value="تحويل بنكي">تحويل بنكي</option>
                 <option value="بطاقة بنكية">بطاقة بنكية</option>
                 <option value="دفع إلكتروني">دفع إلكتروني</option>
+                <option value="تابي او تمارا">تابي او تمارا</option>
                 <option value="طريقة أخرى">طريقة أخرى</option>
             </select>
 
@@ -1989,7 +2043,7 @@ function displayExchanges() {
             <td>${escapeHTML(exchange.date)}</td>
             <td>${escapeHTML(client ? client.name : "—")}</td>
             <td>${payment ? escapeHTML(payment.date) : "—"}</td>
-            <td>${formatNumber(exchange.sar)} ⃁</td>
+            <td>${formatNumber(exchange.sar)} ريال</td>
             <td>${Number(exchange.rate).toFixed(4)}</td>
             <td>${Number(exchange.usd).toFixed(2)} $</td>
             <td>
@@ -2148,6 +2202,7 @@ clearAllBtn.addEventListener("click", function () {
     targetInput.value = target;
 
     paymentForm.reset();
+    paymentDate.value = getTodayDate();
     paymentSearch.value = "";
 
     exchangeRate.value = "";
@@ -2191,3 +2246,14 @@ displayInstallments();
 displayExchangeClients();
 displayExchanges();
 updateDashboard();
+
+
+// ==========================================
+// 33. إغلاق نافذة العميل بزر Escape
+// ==========================================
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && clientModal.style.display === "block") {
+        closeClientDetails();
+    }
+});
